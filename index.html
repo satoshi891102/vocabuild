@@ -2,751 +2,529 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vocabuild — Smart Vocabulary Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --grad-spanish: linear-gradient(135deg, #f7971e, #ffd200);
-  --grad-french: linear-gradient(135deg, #667eea, #764ba2);
-  --grad-arabic: linear-gradient(135deg, #11998e, #38ef7d);
-  --grad-japanese: linear-gradient(135deg, #fc5c7d, #6a82fb);
-  --grad-german: linear-gradient(135deg, #f857a6, #ff5858);
-  --bg: #0f0f1a;
-  --card-bg: #1a1a2e;
-  --text: #e8e8f0;
-  --text-dim: #8888aa;
-  --accent: #667eea;
-  --success: #38ef7d;
-  --danger: #ff5858;
-  --radius: 16px;
+--bg:#f8f9fa;--surface:#fff;--text:#1a1a2e;--text2:#555;--border:#e0e0e0;
+--primary:#6c5ce7;--primary-light:#a29bfe;--shadow:0 4px 24px rgba(0,0,0,.08);
+--card-h:320px;--radius:16px;
 }
-html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-tap-highlight-color:transparent}
-.screen{display:none;min-height:100vh;padding:20px;max-width:480px;margin:0 auto;flex-direction:column}
-.screen.active{display:flex}
-
-/* Header */
-.header{display:flex;justify-content:space-between;align-items:center;padding:8px 0;margin-bottom:16px}
-.header h1{font-size:20px;font-weight:800;background:var(--grad-french);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.header-icons{display:flex;gap:12px}
-.icon-btn{background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer;padding:4px}
-.icon-btn:hover{color:var(--text)}
-
-/* Streak badge */
-.streak-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:600;color:var(--text)}
-.streak-badge .fire{font-size:16px}
-
-/* Welcome */
-#welcome{text-align:center;justify-content:center;gap:24px}
-#welcome h1{font-size:36px;font-weight:900;background:var(--grad-french);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2}
-#welcome p{color:var(--text-dim);font-size:15px;line-height:1.6;max-width:320px;margin:0 auto}
-.start-btn{background:var(--grad-french);border:none;color:#fff;font-size:16px;font-weight:700;padding:16px 48px;border-radius:50px;cursor:pointer;font-family:inherit;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(102,126,234,0.4)}
-.start-btn:hover{transform:scale(1.02)}
-.start-btn:active{transform:scale(0.98)}
-
-/* Language & Interest selection */
-.selection-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
-.sel-card{background:var(--card-bg);border:2px solid transparent;border-radius:var(--radius);padding:20px 16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.sel-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;opacity:0;transition:opacity .2s}
-.sel-card:hover::before,.sel-card.selected::before{opacity:0.15}
-.sel-card.selected{border-color:var(--accent);box-shadow:0 0 20px rgba(102,126,234,0.2)}
-.sel-card .emoji{font-size:32px;margin-bottom:8px;display:block}
-.sel-card .label{font-size:14px;font-weight:600}
-.sel-card .sublabel{font-size:11px;color:var(--text-dim);margin-top:2px}
-
-/* Language colors on cards */
-.sel-card[data-lang="spanish"]::before{background:var(--grad-spanish)}
-.sel-card[data-lang="french"]::before{background:var(--grad-french)}
-.sel-card[data-lang="arabic"]::before{background:var(--grad-arabic)}
-.sel-card[data-lang="japanese"]::before{background:var(--grad-japanese)}
-.sel-card[data-lang="german"]::before{background:var(--grad-german)}
-
-/* Interest cards */
-.sel-card[data-interest]::before{background:var(--grad-french)}
-
-.section-title{font-size:22px;font-weight:800;margin:16px 0 4px}
-.section-sub{color:var(--text-dim);font-size:13px;margin-bottom:12px}
-
-/* Continue button */
-.continue-btn{background:var(--card-bg);border:2px solid rgba(255,255,255,0.1);color:var(--text);font-size:15px;font-weight:700;padding:14px;border-radius:50px;cursor:pointer;font-family:inherit;transition:all .2s;margin-top:auto;margin-bottom:20px;width:100%}
-.continue-btn.ready{background:var(--grad-french);border-color:transparent;box-shadow:0 4px 24px rgba(102,126,234,0.3)}
-.continue-btn:disabled{opacity:0.4;cursor:not-allowed}
-
+[data-theme="dark"]{
+--bg:#0f0f1a;--surface:#1a1a2e;--text:#e8e8f0;--text2:#aaa;--border:#2a2a40;
+--shadow:0 4px 24px rgba(0,0,0,.3);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+.container{max-width:520px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 0;margin-bottom:8px}
+header h1{font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#6c5ce7,#fd79a8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.theme-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;padding:8px}
+/* Screens */
+.screen{display:none;animation:fadeIn .3s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* Language/Interest Picker */
+.picker-title{font-size:1.1rem;font-weight:600;margin:20px 0 12px;text-align:center}
+.picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.picker-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s;font-weight:500;font-size:.95rem}
+.picker-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.picker-card.selected{border-color:var(--primary);background:var(--primary);color:#fff}
+.picker-card .emoji{font-size:1.8rem;display:block;margin-bottom:6px}
+.picker-grid.interests{grid-template-columns:1fr 1fr 1fr}
+.picker-grid.interests .picker-card{padding:14px 8px;font-size:.82rem}
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:var(--radius);font-family:inherit;font-weight:600;font-size:1rem;cursor:pointer;transition:all .2s;margin-top:12px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-secondary{background:var(--surface);color:var(--text);border:2px solid var(--border)}
+/* Stats bar */
+.stats-bar{display:flex;justify-content:space-around;background:var(--surface);border-radius:var(--radius);padding:12px;margin-bottom:16px;box-shadow:var(--shadow)}
+.stat{text-align:center}
+.stat-val{font-size:1.3rem;font-weight:700}
+.stat-label{font-size:.7rem;color:var(--text2);margin-top:2px}
 /* Flashcard */
-.card-container{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 0}
-.card-progress{font-size:13px;color:var(--text-dim);margin-bottom:16px;text-align:center}
-.card-wrapper{width:100%;max-width:360px;height:380px;perspective:1000px;cursor:pointer}
-.card-inner{position:relative;width:100%;height:100%;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d}
-.card-inner.flipped{transform:rotateY(180deg)}
-.card-front,.card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center}
-.card-front{background:var(--card-bg);border:1px solid rgba(255,255,255,0.08)}
-.card-back{background:var(--card-bg);border:1px solid rgba(255,255,255,0.08);transform:rotateY(180deg)}
-.card-word{font-size:42px;font-weight:900;margin-bottom:12px;line-height:1.2}
-.card-pronunciation{font-size:15px;color:var(--text-dim);margin-bottom:16px;font-style:italic}
-.card-translation{font-size:28px;font-weight:700;margin-bottom:16px}
-.card-example{font-size:14px;color:var(--text-dim);line-height:1.6;max-width:280px}
-.card-tap-hint{position:absolute;bottom:20px;font-size:12px;color:var(--text-dim);opacity:0.6}
-.card-interest-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;padding:4px 12px;border-radius:20px;background:rgba(102,126,234,0.2);color:var(--accent);margin-bottom:8px}
-.audio-btn{background:none;border:1px solid rgba(255,255,255,0.15);color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;margin-top:12px;transition:all .2s}
-.audio-btn:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.3)}
-
+.card-scene{perspective:800px;width:100%;height:var(--card-h);margin-bottom:16px;cursor:pointer}
+.card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,.2,.2,1)}
+.card.flipped{transform:rotateY(180deg)}
+.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;box-shadow:var(--shadow)}
+.card-front{background:var(--gradient,linear-gradient(135deg,#6c5ce7,#a29bfe))}
+.card-back{background:var(--surface);transform:rotateY(180deg);border:2px solid var(--border)}
+.card-front .word{font-size:2.2rem;font-weight:700;color:#fff;margin-bottom:8px}
+.card-front .pronunciation{font-size:1rem;color:rgba(255,255,255,.8);font-style:italic}
+.card-front .speak-btn{margin-top:12px;background:rgba(255,255,255,.2);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.3rem;cursor:pointer}
+.card-back .translation{font-size:1.6rem;font-weight:600;margin-bottom:10px}
+.card-back .example{font-size:.88rem;color:var(--text2);text-align:center;line-height:1.5;max-width:90%}
+.card-back .example em{color:var(--primary);font-style:normal;font-weight:600}
 /* Rating buttons */
-.rating-row{display:flex;gap:8px;padding:16px 0;width:100%;max-width:360px}
-.rate-btn{flex:1;padding:14px 8px;border:none;border-radius:12px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:0.5px}
-.rate-btn.again{background:rgba(255,88,88,0.15);color:#ff5858}
-.rate-btn.hard{background:rgba(255,165,0,0.15);color:#ffa500}
-.rate-btn.good{background:rgba(56,239,125,0.15);color:#38ef7d}
-.rate-btn.easy{background:rgba(102,126,234,0.15);color:#667eea}
-.rate-btn:hover{transform:scale(1.05)}
-.rate-btn:active{transform:scale(0.95)}
-
-/* Dashboard */
-#dashboard{padding-bottom:40px}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
-.stat-card{background:var(--card-bg);border-radius:var(--radius);padding:20px;text-align:center}
-.stat-number{font-size:32px;font-weight:900;margin-bottom:4px}
-.stat-label{font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
-.stat-card.streak .stat-number{background:var(--grad-spanish);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.stat-card.learned .stat-number{color:var(--success)}
-.stat-card.reviews .stat-number{color:var(--accent)}
-.stat-card.accuracy .stat-number{background:var(--grad-japanese);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-
-.progress-section{margin:24px 0}
-.progress-section h3{font-size:14px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim)}
-.progress-bar-wrap{background:rgba(255,255,255,0.05);border-radius:10px;height:8px;overflow:hidden;margin-bottom:8px}
-.progress-bar-fill{height:100%;border-radius:10px;transition:width .6s cubic-bezier(0.4,0,0.2,1)}
-.progress-label{font-size:12px;color:var(--text-dim)}
-
-.action-row{display:flex;gap:12px;margin:20px 0}
-.action-btn{flex:1;padding:14px;border:1px solid rgba(255,255,255,0.1);background:var(--card-bg);color:var(--text);border-radius:var(--radius);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
-.action-btn:hover{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.2)}
-.action-btn.primary{background:var(--grad-french);border-color:transparent;color:#fff}
-
-/* Settings */
-.settings-group{background:var(--card-bg);border-radius:var(--radius);padding:16px;margin:12px 0}
-.settings-group h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:12px}
-.setting-item{display:flex;justify-content:between;align-items:center;padding:8px 0}
-.setting-item label{flex:1;font-size:14px}
-.setting-item select{background:rgba(255,255,255,0.05);color:var(--text);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 12px;font-family:inherit;font-size:13px}
-.danger-zone{margin-top:32px}
-.danger-btn{background:rgba(255,88,88,0.1);border:1px solid rgba(255,88,88,0.2);color:#ff5858;padding:12px;border-radius:var(--radius);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;width:100%}
-
-/* Session complete */
-.session-complete{text-align:center;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-.session-complete .big-emoji{font-size:64px}
-.session-complete h2{font-size:24px;font-weight:800}
-.session-complete p{color:var(--text-dim);font-size:14px;line-height:1.6}
-
-/* Language gradient applied dynamically */
-.lang-gradient{background:var(--current-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-
-/* Back button */
-.back-btn{background:none;border:none;color:var(--text-dim);font-size:14px;cursor:pointer;padding:8px 0;font-family:inherit;display:flex;align-items:center;gap:4px}
-.back-btn:hover{color:var(--text)}
-
-/* Animations */
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.animate-in{animation:slideUp .4s ease-out}
-
-/* Scroll */
-.screen{overflow-y:auto}
-.screen::-webkit-scrollbar{display:none}
+.rating{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.rating button{padding:12px 4px;border:none;border-radius:12px;font-family:inherit;font-weight:600;font-size:.82rem;cursor:pointer;color:#fff;transition:transform .15s}
+.rating button:active{transform:scale(.95)}
+.r-again{background:#e74c3c}.r-hard{background:#e67e22}.r-good{background:#2ecc71}.r-easy{background:#3498db}
+/* Progress screen */
+.progress-card{background:var(--surface);border-radius:var(--radius);padding:20px;margin-bottom:12px;box-shadow:var(--shadow)}
+.progress-card h3{font-size:.95rem;font-weight:600;margin-bottom:12px}
+.bar-bg{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:6px 0}
+.bar-fill{height:100%;border-radius:4px;transition:width .4s}
+.word-list{max-height:260px;overflow-y:auto}
+.word-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.88rem}
+.word-row:last-child{border:none}
+.nav-bottom{display:flex;gap:8px;position:fixed;bottom:0;left:0;right:0;background:var(--surface);padding:10px 16px;border-top:1px solid var(--border);max-width:520px;margin:0 auto}
+.nav-bottom button{flex:1;padding:10px;border:none;background:none;font-family:inherit;font-size:.78rem;font-weight:500;color:var(--text2);cursor:pointer;border-radius:10px}
+.nav-bottom button.active{color:var(--primary);background:rgba(108,92,231,.1);font-weight:600}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text2)}
+.empty-state .emoji{font-size:3rem;margin-bottom:12px;display:block}
+.streak-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#f39c12,#e74c3c);color:#fff;padding:4px 10px;border-radius:20px;font-size:.78rem;font-weight:600}
+.back-link{background:none;border:none;color:var(--primary);font-family:inherit;font-weight:500;cursor:pointer;font-size:.9rem;padding:8px 0;display:flex;align-items:center;gap:4px}
+.card-count{text-align:center;font-size:.85rem;color:var(--text2);margin-bottom:12px}
+body.lang-spanish{--gradient:linear-gradient(135deg,#e74c3c,#f39c12)}
+body.lang-french{--gradient:linear-gradient(135deg,#3498db,#9b59b6)}
+body.lang-arabic{--gradient:linear-gradient(135deg,#1abc9c,#16a085)}
+body.lang-japanese{--gradient:linear-gradient(135deg,#e84393,#fd79a8)}
+body.lang-german{--gradient:linear-gradient(135deg,#2d3436,#636e72)}
+.reset-btn{background:none;border:none;color:#e74c3c;font-family:inherit;font-size:.82rem;cursor:pointer;padding:8px;margin-top:8px}
 </style>
 </head>
 <body>
+<div class="container">
+<header>
+<h1>Vocabuild</h1>
+<div style="display:flex;align-items:center;gap:4px">
+<span class="streak-badge" id="streakBadge" style="display:none">🔥 <span id="streakNum">0</span></span>
+<button class="theme-btn" id="themeBtn" aria-label="Toggle theme">🌙</button>
+</div>
+</header>
 
-<!-- Welcome Screen -->
-<div id="welcome" class="screen active">
-  <div>
-    <div style="font-size:48px;margin-bottom:16px">🌍</div>
-    <h1>Vocabuild</h1>
-    <p>Learn any language through spaced repetition, personalized to your interests.</p>
-  </div>
-  <button class="start-btn" onclick="showScreen('setup-lang')">Get Started</button>
-  <div id="welcome-continue" style="display:none;margin-top:12px">
-    <button class="start-btn" style="background:var(--card-bg);box-shadow:none;border:1px solid rgba(255,255,255,0.15)" onclick="resumeSession()">Continue Learning</button>
-  </div>
+<!-- LANGUAGE PICKER -->
+<div class="screen active" id="screenLang">
+<p class="picker-title">Choose a language to learn</p>
+<div class="picker-grid" id="langGrid"></div>
+<p class="picker-title">What interests you?</p>
+<div class="picker-grid interests" id="interestGrid"></div>
+<button class="btn btn-primary" id="startBtn" disabled>Start Learning</button>
 </div>
 
-<!-- Language Selection -->
-<div id="setup-lang" class="screen">
-  <button class="back-btn" onclick="showScreen('welcome')">← Back</button>
-  <h2 class="section-title">Choose your language</h2>
-  <p class="section-sub">What do you want to learn?</p>
-  <div class="selection-grid">
-    <div class="sel-card" data-lang="spanish" onclick="selectLang(this)">
-      <span class="emoji">🇪🇸</span>
-      <div class="label">Spanish</div>
-      <div class="sublabel">100 words</div>
-    </div>
-    <div class="sel-card" data-lang="french" onclick="selectLang(this)">
-      <span class="emoji">🇫🇷</span>
-      <div class="label">French</div>
-      <div class="sublabel">50 words</div>
-    </div>
-    <div class="sel-card" data-lang="arabic" onclick="selectLang(this)">
-      <span class="emoji">🇸🇦</span>
-      <div class="label">Arabic</div>
-      <div class="sublabel">50 words</div>
-    </div>
-    <div class="sel-card" data-lang="japanese" onclick="selectLang(this)">
-      <span class="emoji">🇯🇵</span>
-      <div class="label">Japanese</div>
-      <div class="sublabel">50 words</div>
-    </div>
-    <div class="sel-card" data-lang="german" onclick="selectLang(this)">
-      <span class="emoji">🇩🇪</span>
-      <div class="label">German</div>
-      <div class="sublabel">50 words</div>
-    </div>
-  </div>
-  <button class="continue-btn" id="lang-continue" disabled onclick="showScreen('setup-interest')">Continue</button>
+<!-- STUDY SCREEN -->
+<div class="screen" id="screenStudy">
+<div class="stats-bar">
+<div class="stat"><div class="stat-val" id="sNew">0</div><div class="stat-label">New</div></div>
+<div class="stat"><div class="stat-val" id="sLearning">0</div><div class="stat-label">Learning</div></div>
+<div class="stat"><div class="stat-val" id="sMastered">0</div><div class="stat-label">Mastered</div></div>
+<div class="stat"><div class="stat-val" id="sDue">0</div><div class="stat-label">Due</div></div>
+</div>
+<div class="card-count" id="cardCount"></div>
+<div class="card-scene" id="cardScene">
+<div class="card" id="card">
+<div class="card-face card-front">
+<div class="word" id="cWord"></div>
+<div class="pronunciation" id="cPron"></div>
+<button class="speak-btn" id="speakBtn">🔊</button>
+</div>
+<div class="card-face card-back">
+<div class="translation" id="cTrans"></div>
+<div class="example" id="cExample"></div>
+</div>
+</div>
+</div>
+<div class="rating" id="ratingBtns" style="display:none">
+<button class="r-again" onclick="rate(0)">Again</button>
+<button class="r-hard" onclick="rate(1)">Hard</button>
+<button class="r-good" onclick="rate(2)">Good</button>
+<button class="r-easy" onclick="rate(3)">Easy</button>
+</div>
+<div class="empty-state" id="emptyStudy" style="display:none">
+<span class="emoji">🎉</span>
+<p style="font-weight:600;margin-bottom:4px">All caught up!</p>
+<p style="font-size:.88rem">No cards due right now. Come back later.</p>
+</div>
 </div>
 
-<!-- Interest Selection -->
-<div id="setup-interest" class="screen">
-  <button class="back-btn" onclick="showScreen('setup-lang')">← Back</button>
-  <h2 class="section-title">Choose your interest</h2>
-  <p class="section-sub">Get example sentences tailored to you</p>
-  <div class="selection-grid">
-    <div class="sel-card" data-interest="business" onclick="selectInterest(this)">
-      <span class="emoji">💼</span>
-      <div class="label">Business</div>
-    </div>
-    <div class="sel-card" data-interest="travel" onclick="selectInterest(this)">
-      <span class="emoji">✈️</span>
-      <div class="label">Travel</div>
-    </div>
-    <div class="sel-card" data-interest="food" onclick="selectInterest(this)">
-      <span class="emoji">🍕</span>
-      <div class="label">Food</div>
-    </div>
-    <div class="sel-card" data-interest="tech" onclick="selectInterest(this)">
-      <span class="emoji">💻</span>
-      <div class="label">Tech</div>
-    </div>
-    <div class="sel-card" data-interest="sports" onclick="selectInterest(this)">
-      <span class="emoji">⚽</span>
-      <div class="label">Sports</div>
-    </div>
-    <div class="sel-card" data-interest="daily" onclick="selectInterest(this)">
-      <span class="emoji">☀️</span>
-      <div class="label">Daily Life</div>
-    </div>
-  </div>
-  <button class="continue-btn" id="interest-continue" disabled onclick="startLearning()">Start Learning</button>
+<!-- PROGRESS SCREEN -->
+<div class="screen" id="screenProgress">
+<div class="progress-card">
+<h3>Overall Progress</h3>
+<div style="display:flex;justify-content:space-between;font-size:.85rem"><span id="pLearned">0</span><span id="pTotal">0</span></div>
+<div class="bar-bg"><div class="bar-fill" id="pBar" style="width:0;background:var(--primary)"></div></div>
+</div>
+<div class="progress-card">
+<h3>Word List</h3>
+<div class="word-list" id="wordList"></div>
+</div>
+<button class="btn btn-secondary" onclick="showScreen('screenLang')">← Change Language</button>
+<button class="reset-btn" onclick="resetProgress()">Reset all progress</button>
 </div>
 
-<!-- Study Screen -->
-<div id="study" class="screen">
-  <div class="header">
-    <h1>Vocabuild</h1>
-    <div class="header-icons">
-      <div class="streak-badge"><span class="fire">🔥</span><span id="header-streak">0</span></div>
-      <button class="icon-btn" onclick="showScreen('dashboard')" title="Dashboard">📊</button>
-      <button class="icon-btn" onclick="showScreen('settings')" title="Settings">⚙️</button>
-    </div>
-  </div>
-  <div class="card-progress" id="card-progress">Card 1 of 10</div>
-  <div class="card-container">
-    <div class="card-wrapper" onclick="flipCard()">
-      <div class="card-inner" id="card-inner">
-        <div class="card-front" id="card-front">
-          <div class="card-word" id="card-word">—</div>
-          <div class="card-pronunciation" id="card-pronunciation">—</div>
-          <button class="audio-btn" onclick="event.stopPropagation();playAudio()" title="Listen">🔊</button>
-          <div class="card-tap-hint">Tap to reveal</div>
-        </div>
-        <div class="card-back" id="card-back">
-          <div class="card-interest-tag" id="card-interest-tag">DAILY</div>
-          <div class="card-translation" id="card-translation">—</div>
-          <div class="card-example" id="card-example">—</div>
-          <button class="audio-btn" onclick="event.stopPropagation();playAudio()" title="Listen">🔊</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="rating-row" id="rating-row" style="display:none">
-    <button class="rate-btn again" onclick="rateCard(0)">Again</button>
-    <button class="rate-btn hard" onclick="rateCard(3)">Hard</button>
-    <button class="rate-btn good" onclick="rateCard(4)">Good</button>
-    <button class="rate-btn easy" onclick="rateCard(5)">Easy</button>
-  </div>
+<div class="nav-bottom" id="navBottom" style="display:none">
+<button onclick="showScreen('screenStudy')" id="navStudy" class="active">📚 Study</button>
+<button onclick="showScreen('screenProgress')" id="navProgress">📊 Progress</button>
 </div>
-
-<!-- Session Complete -->
-<div id="complete" class="screen">
-  <div class="header">
-    <h1>Vocabuild</h1>
-    <div class="header-icons">
-      <button class="icon-btn" onclick="showScreen('dashboard')">📊</button>
-      <button class="icon-btn" onclick="showScreen('settings')">⚙️</button>
-    </div>
-  </div>
-  <div class="session-complete animate-in">
-    <div class="big-emoji">🎉</div>
-    <h2>Session Complete!</h2>
-    <p id="complete-stats">You reviewed 10 cards today. Keep up the streak!</p>
-    <div style="margin-top:20px;display:flex;gap:12px;width:100%;max-width:320px">
-      <button class="action-btn" onclick="showScreen('dashboard')">Dashboard</button>
-      <button class="action-btn primary" onclick="startSession()">Study More</button>
-    </div>
-  </div>
-</div>
-
-<!-- Dashboard -->
-<div id="dashboard" class="screen">
-  <div class="header">
-    <h1>Vocabuild</h1>
-    <div class="header-icons">
-      <button class="icon-btn" onclick="showScreen('settings')">⚙️</button>
-    </div>
-  </div>
-  <button class="back-btn" onclick="showScreen('study')" id="dash-back">← Back to study</button>
-  <div class="stat-grid">
-    <div class="stat-card streak">
-      <div class="stat-number" id="dash-streak">0</div>
-      <div class="stat-label">Day Streak</div>
-    </div>
-    <div class="stat-card learned">
-      <div class="stat-number" id="dash-learned">0</div>
-      <div class="stat-label">Words Learned</div>
-    </div>
-    <div class="stat-card reviews">
-      <div class="stat-number" id="dash-reviews">0</div>
-      <div class="stat-label">Total Reviews</div>
-    </div>
-    <div class="stat-card accuracy">
-      <div class="stat-number" id="dash-accuracy">0%</div>
-      <div class="stat-label">Accuracy</div>
-    </div>
-  </div>
-  <div class="progress-section">
-    <h3>Vocabulary Progress</h3>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="dash-progress" style="width:0%;background:var(--grad-french)"></div>
-    </div>
-    <div class="progress-label" id="dash-progress-label">0 / 100 words</div>
-  </div>
-  <div class="progress-section">
-    <h3>Due for Review</h3>
-    <div style="font-size:32px;font-weight:900;color:var(--accent)" id="dash-due">0</div>
-    <div class="progress-label">words due today</div>
-  </div>
-  <div class="action-row">
-    <button class="action-btn primary" onclick="startSession()">Study Now</button>
-  </div>
-</div>
-
-<!-- Settings -->
-<div id="settings" class="screen">
-  <div class="header">
-    <h1>Settings</h1>
-  </div>
-  <button class="back-btn" onclick="goBack()">← Back</button>
-  <div class="settings-group">
-    <h3>Preferences</h3>
-    <div class="setting-item">
-      <label>Language</label>
-      <select id="set-lang" onchange="changeLang(this.value)"></select>
-    </div>
-    <div class="setting-item">
-      <label>Interest</label>
-      <select id="set-interest" onchange="changeInterest(this.value)">
-        <option value="business">Business</option>
-        <option value="travel">Travel</option>
-        <option value="food">Food</option>
-        <option value="tech">Tech</option>
-        <option value="sports">Sports</option>
-        <option value="daily">Daily Life</option>
-      </select>
-    </div>
-    <div class="setting-item">
-      <label>Cards per session</label>
-      <select id="set-cards" onchange="changeCardsPerSession(this.value)">
-        <option value="5">5</option>
-        <option value="10" selected>10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-      </select>
-    </div>
-  </div>
-  <div class="danger-zone">
-    <button class="danger-btn" onclick="resetProgress()">Reset All Progress</button>
-  </div>
 </div>
 
 <script>
-// ─── State ───
-let wordData = {};
-let state = {
-  lang: null,
-  interest: null,
-  cardsPerSession: 10,
-  streak: 0,
-  lastStudyDate: null,
-  totalReviews: 0,
-  correctReviews: 0,
-  words: {} // { "spanish": { "hola": { ef:2.5, interval:0, repetitions:0, nextReview: "2025-01-01" } } }
+// ==================== WORD DATA ====================
+const WORDS={
+spanish:[
+{word:"hola",translation:"hello",pronunciation:"OH-lah",examples:{daily:"¡Hola! ¿Cómo estás?",business:"Hola, soy el director.",travel:"Hola, ¿dónde está el hotel?",food:"Hola, una mesa para dos.",tech:"Hola, bienvenido a la plataforma.",sports:"¡Hola equipo!"}},
+{word:"gracias",translation:"thank you",pronunciation:"GRAH-syahs",examples:{daily:"Muchas gracias por tu ayuda.",business:"Gracias por la reunión.",travel:"Gracias por las indicaciones.",food:"Gracias, estuvo delicioso.",tech:"Gracias por el reporte.",sports:"Gracias por el partido."}},
+{word:"agua",translation:"water",pronunciation:"AH-gwah",examples:{daily:"Necesito un vaso de agua.",business:"¿Quiere agua o café?",travel:"¿Tiene agua embotellada?",food:"Agua con limón, por favor.",tech:"Sistema de purificación de agua.",sports:"Toma agua después del ejercicio."}},
+{word:"tiempo",translation:"time / weather",pronunciation:"TYEM-poh",examples:{daily:"No tengo tiempo hoy.",business:"Necesitamos más tiempo.",travel:"¿Cómo está el tiempo?",food:"Tiempo de cocción: 30 minutos.",tech:"Tiempo de respuesta del servidor.",sports:"¡Tiempo fuera!"}},
+{word:"dinero",translation:"money",pronunciation:"dee-NEH-roh",examples:{daily:"No llevo dinero encima.",business:"El dinero está en la cuenta.",travel:"¿Dónde cambio dinero?",food:"El dinero justo para la cuenta.",tech:"Transferencia de dinero digital.",sports:"El equipo gastó mucho dinero."}},
+{word:"trabajo",translation:"work / job",pronunciation:"trah-BAH-hoh",examples:{daily:"Voy al trabajo temprano.",business:"Buen trabajo en el proyecto.",travel:"Viajo por trabajo.",food:"Trabajo en un restaurante.",tech:"Trabajo remoto con tecnología.",sports:"Buen trabajo en la cancha."}},
+{word:"casa",translation:"house / home",pronunciation:"KAH-sah",examples:{daily:"Estoy en casa.",business:"Trabajo desde casa.",travel:"Buscamos una casa de alquiler.",food:"Comida casera, hecha en casa.",tech:"Casa inteligente automatizada.",sports:"Jugamos en casa hoy."}},
+{word:"comida",translation:"food / meal",pronunciation:"koh-MEE-dah",examples:{daily:"La comida está lista.",business:"Comida de negocios a las dos.",travel:"La comida local es increíble.",food:"Esta comida es deliciosa.",tech:"App de entrega de comida.",sports:"Comida saludable para atletas."}},
+{word:"amigo",translation:"friend",pronunciation:"ah-MEE-goh",examples:{daily:"Es mi mejor amigo.",business:"Un amigo me refirió.",travel:"Viajo con un amigo.",food:"Cena con amigos.",tech:"Amigo en línea.",sports:"Mi amigo juega fútbol."}},
+{word:"bueno",translation:"good",pronunciation:"BWEH-noh",examples:{daily:"Hoy fue un buen día.",business:"Es un buen negocio.",travel:"Un buen hotel.",food:"¡Qué bueno está esto!",tech:"Buen rendimiento del sistema.",sports:"Buen partido."}},
+{word:"grande",translation:"big / large",pronunciation:"GRAHN-deh",examples:{daily:"La ciudad es muy grande.",business:"Una empresa grande.",travel:"El aeropuerto es grande.",food:"Una porción grande, por favor.",tech:"Big data, datos a gran escala.",sports:"Un estadio grande."}},
+{word:"pequeño",translation:"small / little",pronunciation:"peh-KEH-nyoh",examples:{daily:"Tengo un apartamento pequeño.",business:"Pequeña empresa local.",travel:"Un pueblo pequeño y bonito.",food:"Un café pequeño.",tech:"Dispositivo pequeño y portátil.",sports:"Equipo pequeño pero fuerte."}},
+{word:"nuevo",translation:"new",pronunciation:"NWEH-voh",examples:{daily:"Tengo un teléfono nuevo.",business:"Un nuevo contrato.",travel:"Explorar un lugar nuevo.",food:"Un restaurante nuevo.",tech:"Nueva actualización disponible.",sports:"Jugador nuevo en el equipo."}},
+{word:"calle",translation:"street",pronunciation:"KAH-yeh",examples:{daily:"Vivo en esta calle.",business:"Oficina en la calle principal.",travel:"¿Qué calle es esta?",food:"Comida de calle deliciosa.",tech:"Mapa digital de calles.",sports:"Correr por la calle."}},
+{word:"ciudad",translation:"city",pronunciation:"syoo-DAHD",examples:{daily:"Me gusta esta ciudad.",business:"La ciudad tiene oportunidades.",travel:"Visitamos una ciudad nueva.",food:"La mejor pizza de la ciudad.",tech:"Ciudad inteligente conectada.",sports:"Maratón de la ciudad."}},
+{word:"familia",translation:"family",pronunciation:"fah-MEE-lyah",examples:{daily:"Amo a mi familia.",business:"Empresa familiar.",travel:"Vacaciones en familia.",food:"Receta de familia.",tech:"Plan familiar de streaming.",sports:"El equipo es una familia."}},
+{word:"libro",translation:"book",pronunciation:"LEE-broh",examples:{daily:"Estoy leyendo un libro.",business:"Un libro de negocios.",travel:"Guía de viaje, un buen libro.",food:"Libro de recetas.",tech:"Libro digital, eBook.",sports:"Libro de reglas del juego."}},
+{word:"mesa",translation:"table",pronunciation:"MEH-sah",examples:{daily:"La cena está en la mesa.",business:"Mesa de conferencias.",travel:"Una mesa con vista.",food:"Mesa para cuatro, por favor.",tech:"Tabla de datos.",sports:"Mesa de ping-pong."}},
+{word:"puerta",translation:"door",pronunciation:"PWEHR-tah",examples:{daily:"Cierra la puerta.",business:"Puerta de la oficina.",travel:"Puerta de embarque 12.",food:"Mesa cerca de la puerta.",tech:"Cerradura inteligente en la puerta.",sports:"Puerta del vestuario."}},
+{word:"coche",translation:"car",pronunciation:"KOH-cheh",examples:{daily:"Voy en coche al trabajo.",business:"Coche de empresa.",travel:"Alquilar un coche.",food:"Comida para llevar al coche.",tech:"Coche eléctrico autónomo.",sports:"Carrera de coches."}},
+{word:"teléfono",translation:"phone",pronunciation:"teh-LEH-foh-noh",examples:{daily:"¿Dónde está mi teléfono?",business:"Llamada de teléfono importante.",travel:"Teléfono sin roaming.",food:"Pedir por teléfono.",tech:"Teléfono inteligente nuevo.",sports:"Vi el partido por teléfono."}},
+{word:"problema",translation:"problem",pronunciation:"proh-BLEH-mah",examples:{daily:"No es un gran problema.",business:"Resolver el problema del cliente.",travel:"Tenemos un problema con el vuelo.",food:"Problema con la reserva.",tech:"Problema técnico en el servidor.",sports:"Problema con la lesión."}},
+{word:"pregunta",translation:"question",pronunciation:"preh-GOON-tah",examples:{daily:"Tengo una pregunta.",business:"Buena pregunta en la reunión.",travel:"Pregunta sobre el horario.",food:"Pregunta sobre los ingredientes.",tech:"Pregunta frecuente en el foro.",sports:"Pregunta al árbitro."}},
+{word:"respuesta",translation:"answer",pronunciation:"rehs-PWEHS-tah",examples:{daily:"Necesito una respuesta.",business:"Respuesta al correo urgente.",travel:"Respuesta del hotel.",food:"Respuesta del chef.",tech:"Tiempo de respuesta rápido.",sports:"Respuesta del entrenador."}},
+{word:"tienda",translation:"store / shop",pronunciation:"TYEHN-dah",examples:{daily:"Voy a la tienda.",business:"Abrir una tienda nueva.",travel:"Tienda de recuerdos.",food:"Tienda de comestibles.",tech:"Tienda de aplicaciones.",sports:"Tienda de deportes."}},
+{word:"precio",translation:"price",pronunciation:"PREH-syoh",examples:{daily:"¿Cuál es el precio?",business:"Negociar el precio.",travel:"Buen precio para el vuelo.",food:"Precio del menú.",tech:"Precio de suscripción.",sports:"Precio de las entradas."}},
+{word:"persona",translation:"person",pronunciation:"pehr-SOH-nah",examples:{daily:"Es buena persona.",business:"Persona de contacto.",travel:"Precio por persona.",food:"Menú por persona.",tech:"Datos por persona.",sports:"Persona más valiosa."}},
+{word:"noche",translation:"night",pronunciation:"NOH-cheh",examples:{daily:"Buenas noches.",business:"Reunión de noche.",travel:"Una noche en el hotel.",food:"Cena de noche.",tech:"Modo noche activado.",sports:"Partido de noche."}},
+{word:"mañana",translation:"morning / tomorrow",pronunciation:"mah-NYAH-nah",examples:{daily:"Hasta mañana.",business:"Reunión mañana a las 9.",travel:"Salimos mañana temprano.",food:"Desayuno por la mañana.",tech:"Actualización mañana.",sports:"Entrenamiento por la mañana."}},
+{word:"país",translation:"country",pronunciation:"pah-EES",examples:{daily:"Mi país es hermoso.",business:"Expandir al país vecino.",travel:"Visitar un nuevo país.",food:"Comida típica del país.",tech:"Tecnología líder del país.",sports:"Selección del país."}},
+{word:"mundo",translation:"world",pronunciation:"MOON-doh",examples:{daily:"El mundo es pequeño.",business:"Mercado mundial.",travel:"Viajar por el mundo.",food:"Cocinas del mundo.",tech:"Internet conecta al mundo.",sports:"Copa del mundo."}},
+{word:"año",translation:"year",pronunciation:"AH-nyoh",examples:{daily:"Feliz año nuevo.",business:"Plan del año fiscal.",travel:"Viaje del año.",food:"Vino del año pasado.",tech:"Tecnología del año.",sports:"Jugador del año."}},
+{word:"día",translation:"day",pronunciation:"DEE-ah",examples:{daily:"Buen día para todos.",business:"Día laboral completo.",travel:"Primer día de viaje.",food:"Menú del día.",tech:"Actualización del día.",sports:"Día de partido."}},
+{word:"hora",translation:"hour / time",pronunciation:"OH-rah",examples:{daily:"¿Qué hora es?",business:"Hora de la reunión.",travel:"Hora de salida del vuelo.",food:"Una hora de espera.",tech:"Hora del servidor.",sports:"Hora del partido."}},
+{word:"cosa",translation:"thing",pronunciation:"KOH-sah",examples:{daily:"Es una cosa importante.",business:"Otra cosa que discutir.",travel:"¿Qué cosa necesito llevar?",food:"La cosa más rica del menú.",tech:"Una cosa más que configurar.",sports:"Cosa de equipo."}},
+{word:"lugar",translation:"place",pronunciation:"loo-GAHR",examples:{daily:"Es un buen lugar.",business:"Lugar de la oficina.",travel:"Mejor lugar para visitar.",food:"Mejor lugar para comer.",tech:"Lugar en el ranking.",sports:"Primer lugar del torneo."}},
+{word:"manera",translation:"way / manner",pronunciation:"mah-NEH-rah",examples:{daily:"De esta manera es mejor.",business:"Manera profesional de actuar.",travel:"¿De qué manera llego?",food:"Preparado de manera artesanal.",tech:"Manera eficiente de codificar.",sports:"Manera de jugar."}},
+{word:"parte",translation:"part",pronunciation:"PAHR-teh",examples:{daily:"Es parte de mi vida.",business:"Parte del acuerdo.",travel:"La mejor parte del viaje.",food:"Parte de la receta.",tech:"Parte del sistema.",sports:"Parte del equipo."}},
+{word:"ejemplo",translation:"example",pronunciation:"eh-HEM-ploh",examples:{daily:"Por ejemplo, esto.",business:"Un ejemplo de éxito.",travel:"Por ejemplo, este hotel.",food:"Ejemplo de plato típico.",tech:"Ejemplo de código.",sports:"Ejemplo de buen juego."}},
+{word:"gobierno",translation:"government",pronunciation:"goh-BYEHR-noh",examples:{daily:"El gobierno anunció cambios.",business:"Regulación del gobierno.",travel:"Visa del gobierno.",food:"Regulación alimentaria del gobierno.",tech:"Gobierno digital.",sports:"Apoyo del gobierno al deporte."}},
+{word:"empresa",translation:"company / business",pronunciation:"em-PREH-sah",examples:{daily:"Trabaja en una empresa.",business:"Empresa multinacional.",travel:"Empresa de turismo.",food:"Empresa de alimentos.",tech:"Empresa de tecnología.",sports:"Empresa patrocinadora."}},
+{word:"derecho",translation:"right / law",pronunciation:"deh-REH-choh",examples:{daily:"Tienes derecho a opinar.",business:"Derecho mercantil.",travel:"Siga todo derecho.",food:"Derecho a comida segura.",tech:"Derecho digital.",sports:"Tiro libre directo, derecho."}},
+{word:"programa",translation:"program",pronunciation:"proh-GRAH-mah",examples:{daily:"Veo un programa de TV.",business:"Programa de formación.",travel:"Programa de viaje.",food:"Programa de cocina.",tech:"Programa de computadora.",sports:"Programa de entrenamiento."}},
+{word:"vida",translation:"life",pronunciation:"VEE-dah",examples:{daily:"Así es la vida.",business:"Vida profesional activa.",travel:"La vida del viajero.",food:"Vida saludable.",tech:"Vida digital.",sports:"Vida deportiva."}},
+{word:"momento",translation:"moment",pronunciation:"moh-MEN-toh",examples:{daily:"Un momento, por favor.",business:"Momento clave del proyecto.",travel:"Mejor momento para viajar.",food:"Momento de comer.",tech:"Momento de la actualización.",sports:"Momento decisivo."}},
+{word:"historia",translation:"history / story",pronunciation:"ees-TOH-ryah",examples:{daily:"Cuéntame la historia.",business:"Historia de la empresa.",travel:"Historia de la ciudad.",food:"Historia de la receta.",tech:"Historia de la tecnología.",sports:"Historia del deporte."}},
+{word:"forma",translation:"form / way / shape",pronunciation:"FOHR-mah",examples:{daily:"De alguna forma lo logramos.",business:"Forma de pago aceptada.",travel:"Forma de llegar rápido.",food:"Forma del pan artesanal.",tech:"Forma de optimizar código.",sports:"Buena forma física."}},
+{word:"cuenta",translation:"account / bill",pronunciation:"KWEN-tah",examples:{daily:"Ten en cuenta esto.",business:"Cuenta bancaria de empresa.",travel:"La cuenta del hotel.",food:"La cuenta, por favor.",tech:"Cuenta de usuario nueva.",sports:"Cuenta de puntos."}},
+{word:"grupo",translation:"group",pronunciation:"GROO-poh",examples:{daily:"Un grupo de amigos.",business:"Grupo empresarial.",travel:"Viaje en grupo.",food:"Grupo para cenar.",tech:"Grupo de chat.",sports:"Grupo de entrenamiento."}},
+{word:"centro",translation:"center / downtown",pronunciation:"SEN-troh",examples:{daily:"Vivo en el centro.",business:"Centro de negocios.",travel:"Centro de la ciudad.",food:"Centro gastronómico.",tech:"Centro de datos.",sports:"Centro del campo."}},
+{word:"poder",translation:"power / to be able",pronunciation:"poh-DEHR",examples:{daily:"El poder de la voluntad.",business:"Poder de negociación.",travel:"¿Puedo ir mañana?",food:"Poder elegir del menú.",tech:"Poder de procesamiento.",sports:"Poder físico del atleta."}}
+],
+french:[
+{word:"bonjour",translation:"hello / good day",pronunciation:"bohn-ZHOOR",examples:{daily:"Bonjour, comment ça va?",business:"Bonjour, je suis le directeur.",travel:"Bonjour, où est la gare?",food:"Bonjour, une table pour deux.",tech:"Bonjour et bienvenue.",sports:"Bonjour l'équipe!"}},
+{word:"merci",translation:"thank you",pronunciation:"mehr-SEE",examples:{daily:"Merci beaucoup!",business:"Merci pour la réunion.",travel:"Merci pour les directions.",food:"Merci, c'était délicieux.",tech:"Merci pour le rapport.",sports:"Merci pour le match."}},
+{word:"eau",translation:"water",pronunciation:"OH",examples:{daily:"Un verre d'eau, s'il vous plaît.",business:"De l'eau ou du café?",travel:"Avez-vous de l'eau?",food:"Eau gazeuse ou plate?",tech:"Purification de l'eau.",sports:"Bois de l'eau après l'effort."}},
+{word:"maison",translation:"house / home",pronunciation:"meh-ZOHN",examples:{daily:"Je suis à la maison.",business:"Travail à la maison.",travel:"Maison de vacances.",food:"Fait maison.",tech:"Maison intelligente.",sports:"Match à la maison."}},
+{word:"temps",translation:"time / weather",pronunciation:"TAHN",examples:{daily:"Je n'ai pas le temps.",business:"Nous avons besoin de temps.",travel:"Quel temps fait-il?",food:"Temps de cuisson.",tech:"Temps de réponse.",sports:"Temps mort!"}},
+{word:"argent",translation:"money",pronunciation:"ar-ZHAHN",examples:{daily:"Je n'ai pas d'argent.",business:"L'argent est sur le compte.",travel:"Où changer de l'argent?",food:"L'argent pour l'addition.",tech:"Transfert d'argent.",sports:"L'équipe a dépensé beaucoup."}},
+{word:"travail",translation:"work",pronunciation:"trah-VY",examples:{daily:"Je vais au travail.",business:"Bon travail!",travel:"Voyage de travail.",food:"Je travaille au restaurant.",tech:"Travail à distance.",sports:"Bon travail sur le terrain."}},
+{word:"ami",translation:"friend",pronunciation:"ah-MEE",examples:{daily:"C'est mon meilleur ami.",business:"Un ami m'a recommandé.",travel:"Je voyage avec un ami.",food:"Dîner entre amis.",tech:"Ami en ligne.",sports:"Mon ami joue au foot."}},
+{word:"jour",translation:"day",pronunciation:"ZHOOR",examples:{daily:"Bonne journée!",business:"Jour ouvrable.",travel:"Premier jour du voyage.",food:"Plat du jour.",tech:"Mise à jour.",sports:"Jour de match."}},
+{word:"nuit",translation:"night",pronunciation:"NWEE",examples:{daily:"Bonne nuit.",business:"Réunion de nuit.",travel:"Une nuit à l'hôtel.",food:"Dîner de nuit.",tech:"Mode nuit.",sports:"Match de nuit."}},
+{word:"ville",translation:"city",pronunciation:"VEEL",examples:{daily:"J'aime cette ville.",business:"La ville offre des opportunités.",travel:"Visiter une nouvelle ville.",food:"Meilleure pizza de la ville.",tech:"Ville intelligente.",sports:"Marathon de la ville."}},
+{word:"livre",translation:"book",pronunciation:"LEEVR",examples:{daily:"Je lis un livre.",business:"Livre de management.",travel:"Guide de voyage.",food:"Livre de recettes.",tech:"Livre numérique.",sports:"Livre de règles."}},
+{word:"voiture",translation:"car",pronunciation:"vwah-TOOR",examples:{daily:"Je prends la voiture.",business:"Voiture de fonction.",travel:"Louer une voiture.",food:"Drive-through en voiture.",tech:"Voiture électrique.",sports:"Course de voitures."}},
+{word:"question",translation:"question",pronunciation:"kehs-TYOHN",examples:{daily:"J'ai une question.",business:"Bonne question.",travel:"Question sur l'horaire.",food:"Question sur les ingrédients.",tech:"Question fréquente.",sports:"Question à l'arbitre."}},
+{word:"monde",translation:"world",pronunciation:"MOHND",examples:{daily:"Le monde est petit.",business:"Marché mondial.",travel:"Voyager le monde.",food:"Cuisines du monde.",tech:"Internet connecte le monde.",sports:"Coupe du monde."}},
+{word:"famille",translation:"family",pronunciation:"fah-MEEY",examples:{daily:"J'aime ma famille.",business:"Entreprise familiale.",travel:"Vacances en famille.",food:"Recette de famille.",tech:"Forfait famille.",sports:"L'équipe est une famille."}},
+{word:"prix",translation:"price / prize",pronunciation:"PREE",examples:{daily:"Quel est le prix?",business:"Négocier le prix.",travel:"Bon prix pour le vol.",food:"Prix du menu.",tech:"Prix d'abonnement.",sports:"Grand prix."}},
+{word:"rue",translation:"street",pronunciation:"ROO",examples:{daily:"J'habite dans cette rue.",business:"Bureau dans la rue principale.",travel:"Quelle rue est-ce?",food:"Nourriture de rue.",tech:"Carte des rues.",sports:"Courir dans la rue."}},
+{word:"pays",translation:"country",pronunciation:"peh-EE",examples:{daily:"Mon pays est beau.",business:"Expansion au pays voisin.",travel:"Visiter un nouveau pays.",food:"Cuisine du pays.",tech:"Tech leader du pays.",sports:"Équipe du pays."}},
+{word:"histoire",translation:"history / story",pronunciation:"ees-TWAHR",examples:{daily:"Raconte-moi l'histoire.",business:"Histoire de l'entreprise.",travel:"Histoire de la ville.",food:"Histoire de la recette.",tech:"Histoire de la tech.",sports:"Histoire du sport."}}
+],
+arabic:[
+{word:"مرحبا",translation:"hello",pronunciation:"mar-HA-ba",examples:{daily:"مرحبا، كيف حالك؟",business:"مرحبا، أنا المدير.",travel:"مرحبا، أين الفندق؟",food:"مرحبا، طاولة لشخصين.",tech:"مرحبا بكم في المنصة.",sports:"مرحبا بالفريق!"}},
+{word:"شكراً",translation:"thank you",pronunciation:"SHUK-ran",examples:{daily:"شكراً جزيلاً.",business:"شكراً على الاجتماع.",travel:"شكراً على المساعدة.",food:"شكراً، كان لذيذاً.",tech:"شكراً على التقرير.",sports:"شكراً على المباراة."}},
+{word:"ماء",translation:"water",pronunciation:"MAA",examples:{daily:"أحتاج كوب ماء.",business:"هل تريد ماء أو قهوة؟",travel:"هل لديكم ماء؟",food:"ماء بارد من فضلك.",tech:"نظام تنقية الماء.",sports:"اشرب ماء بعد التمرين."}},
+{word:"بيت",translation:"house / home",pronunciation:"BAYT",examples:{daily:"أنا في البيت.",business:"أعمل من البيت.",travel:"بيت للإيجار.",food:"طعام بيتي.",tech:"بيت ذكي.",sports:"نلعب في البيت."}},
+{word:"وقت",translation:"time",pronunciation:"WAQT",examples:{daily:"ليس لدي وقت.",business:"نحتاج المزيد من الوقت.",travel:"ما هو وقت المغادرة؟",food:"وقت الطبخ ثلاثون دقيقة.",tech:"وقت استجابة الخادم.",sports:"وقت مستقطع!"}},
+{word:"كتاب",translation:"book",pronunciation:"ki-TAAB",examples:{daily:"أقرأ كتاباً.",business:"كتاب إدارة أعمال.",travel:"كتاب دليل السفر.",food:"كتاب طبخ.",tech:"كتاب إلكتروني.",sports:"كتاب قواعد اللعبة."}},
+{word:"صديق",translation:"friend",pronunciation:"sa-DEEQ",examples:{daily:"هو أفضل صديق لي.",business:"صديق أوصاني.",travel:"أسافر مع صديق.",food:"عشاء مع الأصدقاء.",tech:"صديق عبر الإنترنت.",sports:"صديقي يلعب كرة القدم."}},
+{word:"مدينة",translation:"city",pronunciation:"ma-DEE-na",examples:{daily:"أحب هذه المدينة.",business:"المدينة فيها فرص.",travel:"زيارة مدينة جديدة.",food:"أفضل مطعم في المدينة.",tech:"مدينة ذكية.",sports:"ماراثون المدينة."}},
+{word:"يوم",translation:"day",pronunciation:"YAWM",examples:{daily:"يوم جميل.",business:"يوم عمل كامل.",travel:"أول يوم في الرحلة.",food:"وجبة اليوم.",tech:"تحديث اليوم.",sports:"يوم المباراة."}},
+{word:"ليل",translation:"night",pronunciation:"LAYL",examples:{daily:"تصبح على خير.",business:"اجتماع ليلي.",travel:"ليلة في الفندق.",food:"عشاء الليل.",tech:"الوضع الليلي.",sports:"مباراة ليلية."}},
+{word:"عمل",translation:"work",pronunciation:"A-mal",examples:{daily:"أذهب إلى العمل.",business:"عمل ممتاز!",travel:"سفر للعمل.",food:"أعمل في مطعم.",tech:"عمل عن بُعد.",sports:"عمل جيد في الملعب."}},
+{word:"سيارة",translation:"car",pronunciation:"say-YAA-ra",examples:{daily:"أذهب بالسيارة.",business:"سيارة الشركة.",travel:"استئجار سيارة.",food:"طلب طعام للسيارة.",tech:"سيارة كهربائية.",sports:"سباق سيارات."}},
+{word:"عائلة",translation:"family",pronunciation:"AA-i-la",examples:{daily:"أحب عائلتي.",business:"شركة عائلية.",travel:"إجازة عائلية.",food:"وصفة عائلية.",tech:"اشتراك عائلي.",sports:"الفريق عائلة."}},
+{word:"مال",translation:"money",pronunciation:"MAAL",examples:{daily:"ليس لدي مال.",business:"المال في الحساب.",travel:"أين أصرف المال؟",food:"المال يكفي للحساب.",tech:"تحويل مال رقمي.",sports:"أنفق الفريق مالاً كثيراً."}},
+{word:"سؤال",translation:"question",pronunciation:"su-AAL",examples:{daily:"عندي سؤال.",business:"سؤال جيد.",travel:"سؤال عن الموعد.",food:"سؤال عن المكونات.",tech:"سؤال شائع.",sports:"سؤال للحكم."}},
+{word:"طعام",translation:"food",pronunciation:"ta-AAM",examples:{daily:"الطعام جاهز.",business:"غداء عمل.",travel:"الطعام المحلي رائع.",food:"طعام لذيذ.",tech:"تطبيق توصيل طعام.",sports:"طعام صحي."}},
+{word:"شارع",translation:"street",pronunciation:"SHAA-ri",examples:{daily:"أسكن في هذا الشارع.",business:"مكتب في الشارع الرئيسي.",travel:"أي شارع هذا؟",food:"طعام الشارع.",tech:"خريطة شوارع.",sports:"الجري في الشارع."}},
+{word:"عالم",translation:"world",pronunciation:"AA-lam",examples:{daily:"العالم صغير.",business:"سوق عالمي.",travel:"السفر حول العالم.",food:"مطابخ العالم.",tech:"الإنترنت يربط العالم.",sports:"كأس العالم."}},
+{word:"سنة",translation:"year",pronunciation:"SA-na",examples:{daily:"سنة جديدة سعيدة.",business:"خطة السنة المالية.",travel:"رحلة السنة.",food:"نبيذ من السنة الماضية.",tech:"تقنية السنة.",sports:"لاعب السنة."}},
+{word:"حياة",translation:"life",pronunciation:"ha-YAAH",examples:{daily:"هذه هي الحياة.",business:"حياة مهنية نشطة.",travel:"حياة المسافر.",food:"حياة صحية.",tech:"حياة رقمية.",sports:"حياة رياضية."}}
+],
+japanese:[
+{word:"こんにちは",translation:"hello",pronunciation:"kon-ni-chi-wa",examples:{daily:"こんにちは、元気ですか？",business:"こんにちは、社長です。",travel:"こんにちは、ホテルはどこですか？",food:"こんにちは、二人です。",tech:"こんにちは、プラットフォームへようこそ。",sports:"こんにちは、チーム！"}},
+{word:"ありがとう",translation:"thank you",pronunciation:"a-ri-ga-tō",examples:{daily:"ありがとうございます。",business:"会議をありがとう。",travel:"道案内をありがとう。",food:"美味しかった、ありがとう。",tech:"レポートをありがとう。",sports:"試合をありがとう。"}},
+{word:"水",translation:"water",pronunciation:"mi-zu",examples:{daily:"水をください。",business:"水かコーヒーはいかがですか？",travel:"水はありますか？",food:"レモン水をお願いします。",tech:"水の浄化システム。",sports:"運動後に水を飲んで。"}},
+{word:"家",translation:"house / home",pronunciation:"i-e",examples:{daily:"家にいます。",business:"在宅勤務です。",travel:"レンタルの家。",food:"家庭料理。",tech:"スマートホーム。",sports:"ホームゲーム。"}},
+{word:"時間",translation:"time",pronunciation:"ji-kan",examples:{daily:"時間がない。",business:"もっと時間が必要です。",travel:"出発時間は？",food:"調理時間は30分。",tech:"サーバーの応答時間。",sports:"タイムアウト！"}},
+{word:"お金",translation:"money",pronunciation:"o-ka-ne",examples:{daily:"お金がない。",business:"口座にお金があります。",travel:"どこで両替しますか？",food:"会計分のお金。",tech:"デジタル送金。",sports:"チームはたくさんお金を使った。"}},
+{word:"仕事",translation:"work / job",pronunciation:"shi-go-to",examples:{daily:"仕事に行きます。",business:"いい仕事ですね。",travel:"仕事で旅行します。",food:"レストランで仕事しています。",tech:"リモートワーク。",sports:"いいプレーでした。"}},
+{word:"友達",translation:"friend",pronunciation:"to-mo-da-chi",examples:{daily:"親友です。",business:"友達の紹介です。",travel:"友達と旅行します。",food:"友達とディナー。",tech:"オンラインの友達。",sports:"友達はサッカーをします。"}},
+{word:"本",translation:"book",pronunciation:"hon",examples:{daily:"本を読んでいます。",business:"ビジネス書。",travel:"旅行ガイドブック。",food:"料理本。",tech:"電子書籍。",sports:"ルールブック。"}},
+{word:"車",translation:"car",pronunciation:"ku-ru-ma",examples:{daily:"車で行きます。",business:"社用車。",travel:"車をレンタルする。",food:"ドライブスルー。",tech:"電気自動車。",sports:"カーレース。"}},
+{word:"食べ物",translation:"food",pronunciation:"ta-be-mo-no",examples:{daily:"食べ物が用意できました。",business:"ビジネスランチ。",travel:"地元の食べ物は最高。",food:"美味しい食べ物。",tech:"フードデリバリーアプリ。",sports:"アスリートの食事。"}},
+{word:"町",translation:"town / city",pronunciation:"ma-chi",examples:{daily:"この町が好きです。",business:"町にはチャンスがある。",travel:"新しい町を訪れる。",food:"町で一番のピザ。",tech:"スマートシティ。",sports:"町のマラソン。"}},
+{word:"名前",translation:"name",pronunciation:"na-ma-e",examples:{daily:"名前は何ですか？",business:"会社名。",travel:"ホテルの名前。",food:"料理の名前。",tech:"ユーザー名。",sports:"選手の名前。"}},
+{word:"今日",translation:"today",pronunciation:"kyō",examples:{daily:"今日はいい日です。",business:"今日の会議。",travel:"今日出発します。",food:"今日の特別メニュー。",tech:"今日のアップデート。",sports:"今日は試合の日。"}},
+{word:"明日",translation:"tomorrow",pronunciation:"a-shi-ta",examples:{daily:"また明日。",business:"明日9時に会議。",travel:"明日早く出発。",food:"明日の朝食。",tech:"明日アップデート。",sports:"明日は練習。"}},
+{word:"夜",translation:"night",pronunciation:"yo-ru",examples:{daily:"おやすみなさい。",business:"夜の会議。",travel:"ホテルで一夜。",food:"夜のディナー。",tech:"ナイトモード。",sports:"ナイトゲーム。"}},
+{word:"大きい",translation:"big",pronunciation:"ō-kī",examples:{daily:"大きい都市です。",business:"大きい会社。",travel:"大きい空港。",food:"大きいサイズをお願いします。",tech:"ビッグデータ。",sports:"大きいスタジアム。"}},
+{word:"小さい",translation:"small",pronunciation:"chī-sai",examples:{daily:"小さいアパート。",business:"小さい会社。",travel:"小さくて可愛い村。",food:"小さいコーヒー。",tech:"小さいデバイス。",sports:"小さいけど強いチーム。"}},
+{word:"新しい",translation:"new",pronunciation:"a-ta-ra-shī",examples:{daily:"新しい電話。",business:"新しい契約。",travel:"新しい場所を探検。",food:"新しいレストラン。",tech:"新しいアップデート。",sports:"チームの新しい選手。"}},
+{word:"世界",translation:"world",pronunciation:"se-kai",examples:{daily:"世界は小さい。",business:"世界市場。",travel:"世界を旅する。",food:"世界の料理。",tech:"インターネットが世界をつなぐ。",sports:"ワールドカップ。"}}
+],
+german:[
+{word:"hallo",translation:"hello",pronunciation:"HAH-loh",examples:{daily:"Hallo, wie geht's?",business:"Hallo, ich bin der Direktor.",travel:"Hallo, wo ist das Hotel?",food:"Hallo, einen Tisch für zwei.",tech:"Hallo und willkommen.",sports:"Hallo Team!"}},
+{word:"danke",translation:"thank you",pronunciation:"DAHN-kuh",examples:{daily:"Vielen Dank!",business:"Danke für das Meeting.",travel:"Danke für die Wegbeschreibung.",food:"Danke, das war lecker.",tech:"Danke für den Bericht.",sports:"Danke für das Spiel."}},
+{word:"Wasser",translation:"water",pronunciation:"VAH-ser",examples:{daily:"Ein Glas Wasser bitte.",business:"Möchten Sie Wasser oder Kaffee?",travel:"Haben Sie Wasser?",food:"Wasser mit Zitrone bitte.",tech:"Wasserreinigungssystem.",sports:"Trink Wasser nach dem Training."}},
+{word:"Haus",translation:"house / home",pronunciation:"HOWS",examples:{daily:"Ich bin zu Hause.",business:"Homeoffice.",travel:"Ferienhaus.",food:"Hausgemacht.",tech:"Smart Home.",sports:"Heimspiel."}},
+{word:"Zeit",translation:"time",pronunciation:"TSAYT",examples:{daily:"Ich habe keine Zeit.",business:"Wir brauchen mehr Zeit.",travel:"Wie ist die Abfahrtszeit?",food:"Kochzeit: 30 Minuten.",tech:"Serverantwortzeit.",sports:"Auszeit!"}},
+{word:"Geld",translation:"money",pronunciation:"GELT",examples:{daily:"Ich habe kein Geld dabei.",business:"Das Geld ist auf dem Konto.",travel:"Wo kann ich Geld wechseln?",food:"Geld für die Rechnung.",tech:"Digitaler Geldtransfer.",sports:"Das Team hat viel Geld ausgegeben."}},
+{word:"Arbeit",translation:"work",pronunciation:"AR-bait",examples:{daily:"Ich gehe zur Arbeit.",business:"Gute Arbeit!",travel:"Geschäftsreise.",food:"Ich arbeite im Restaurant.",tech:"Fernarbeit.",sports:"Gute Arbeit auf dem Platz."}},
+{word:"Freund",translation:"friend",pronunciation:"FROYNT",examples:{daily:"Er ist mein bester Freund.",business:"Ein Freund hat mich empfohlen.",travel:"Ich reise mit einem Freund.",food:"Abendessen mit Freunden.",tech:"Online-Freund.",sports:"Mein Freund spielt Fußball."}},
+{word:"Tag",translation:"day",pronunciation:"TAHG",examples:{daily:"Guten Tag!",business:"Arbeitstag.",travel:"Erster Reisetag.",food:"Tagesgericht.",tech:"Update des Tages.",sports:"Spieltag."}},
+{word:"Nacht",translation:"night",pronunciation:"NAKHT",examples:{daily:"Gute Nacht.",business:"Nachtmeeting.",travel:"Eine Nacht im Hotel.",food:"Abendessen.",tech:"Nachtmodus.",sports:"Nachtspiel."}},
+{word:"Stadt",translation:"city",pronunciation:"SHTAT",examples:{daily:"Ich mag diese Stadt.",business:"Die Stadt bietet Chancen.",travel:"Eine neue Stadt besuchen.",food:"Beste Pizza der Stadt.",tech:"Smart City.",sports:"Stadtmarathon."}},
+{word:"Buch",translation:"book",pronunciation:"BOOKH",examples:{daily:"Ich lese ein Buch.",business:"Geschäftsbuch.",travel:"Reiseführer.",food:"Kochbuch.",tech:"E-Book.",sports:"Regelbuch."}},
+{word:"Auto",translation:"car",pronunciation:"OW-toh",examples:{daily:"Ich fahre mit dem Auto.",business:"Firmenwagen.",travel:"Ein Auto mieten.",food:"Drive-Through.",tech:"Elektroauto.",sports:"Autorennen."}},
+{word:"Frage",translation:"question",pronunciation:"FRAH-guh",examples:{daily:"Ich habe eine Frage.",business:"Gute Frage.",travel:"Frage zum Fahrplan.",food:"Frage zu den Zutaten.",tech:"Häufige Frage.",sports:"Frage an den Schiedsrichter."}},
+{word:"Welt",translation:"world",pronunciation:"VELT",examples:{daily:"Die Welt ist klein.",business:"Weltmarkt.",travel:"Die Welt bereisen.",food:"Küchen der Welt.",tech:"Internet verbindet die Welt.",sports:"Weltmeisterschaft."}},
+{word:"Familie",translation:"family",pronunciation:"fah-MEE-lyuh",examples:{daily:"Ich liebe meine Familie.",business:"Familienunternehmen.",travel:"Familienurlaub.",food:"Familienrezept.",tech:"Familientarif.",sports:"Das Team ist eine Familie."}},
+{word:"Preis",translation:"price",pronunciation:"PRYS",examples:{daily:"Was ist der Preis?",business:"Den Preis verhandeln.",travel:"Guter Preis für den Flug.",food:"Menüpreis.",tech:"Abopreis.",sports:"Eintrittspreis."}},
+{word:"Straße",translation:"street",pronunciation:"SHTRAH-suh",examples:{daily:"Ich wohne in dieser Straße.",business:"Büro in der Hauptstraße.",travel:"Welche Straße ist das?",food:"Straßenessen.",tech:"Straßenkarte.",sports:"Auf der Straße laufen."}},
+{word:"Land",translation:"country",pronunciation:"LAHNT",examples:{daily:"Mein Land ist schön.",business:"Expansion ins Nachbarland.",travel:"Ein neues Land besuchen.",food:"Landesküche.",tech:"Tech-Leader des Landes.",sports:"Nationalmannschaft."}},
+{word:"Geschichte",translation:"history / story",pronunciation:"guh-SHIKH-tuh",examples:{daily:"Erzähl mir die Geschichte.",business:"Firmengeschichte.",travel:"Geschichte der Stadt.",food:"Geschichte des Rezepts.",tech:"Geschichte der Technik.",sports:"Sportgeschichte."}}
+]
 };
-let currentSession = [];
-let currentCardIndex = 0;
-let isFlipped = false;
-let previousScreen = 'study';
 
-const LANG_NAMES = {spanish:'Spanish',french:'French',arabic:'Arabic',japanese:'Japanese',german:'German'};
-const LANG_VOICES = {spanish:'es',french:'fr',arabic:'ar',japanese:'ja',german:'de'};
-const LANG_GRADS = {
-  spanish:'linear-gradient(135deg, #f7971e, #ffd200)',
-  french:'linear-gradient(135deg, #667eea, #764ba2)',
-  arabic:'linear-gradient(135deg, #11998e, #38ef7d)',
-  japanese:'linear-gradient(135deg, #fc5c7d, #6a82fb)',
-  german:'linear-gradient(135deg, #f857a6, #ff5858)'
+const LANGUAGES=[
+{id:"spanish",name:"Spanish",emoji:"🇪🇸",voice:"es-ES"},
+{id:"french",name:"French",emoji:"🇫🇷",voice:"fr-FR"},
+{id:"arabic",name:"Arabic",emoji:"🇸🇦",voice:"ar-SA"},
+{id:"japanese",name:"Japanese",emoji:"🇯🇵",voice:"ja-JP"},
+{id:"german",name:"German",emoji:"🇩🇪",voice:"de-DE"}
+];
+const INTERESTS=[
+{id:"daily",name:"Daily Life",emoji:"🏠"},
+{id:"business",name:"Business",emoji:"💼"},
+{id:"travel",name:"Travel",emoji:"✈️"},
+{id:"food",name:"Food",emoji:"🍽️"},
+{id:"tech",name:"Tech",emoji:"💻"},
+{id:"sports",name:"Sports",emoji:"⚽"}
+];
+
+// ==================== STATE ====================
+let state={lang:null,interest:null,cards:[],queue:[],current:null,flipped:false};
+const LS_KEY='vocabuild_v1';
+
+function loadState(){
+  try{const d=JSON.parse(localStorage.getItem(LS_KEY));if(d)return d}catch(e){}
+  return{streak:0,lastDate:null,totalReviews:0,words:{}};
+}
+function saveState(s){localStorage.setItem(LS_KEY,JSON.stringify(s))}
+let progress=loadState();
+
+// ==================== STREAK ====================
+function updateStreak(){
+  const today=new Date().toISOString().slice(0,10);
+  if(progress.lastDate===today)return;
+  const yesterday=new Date(Date.now()-864e5).toISOString().slice(0,10);
+  if(progress.lastDate===yesterday){progress.streak++}
+  else if(progress.lastDate!==today){progress.streak=1}
+  progress.lastDate=today;
+  saveState(progress);
+  updateStreakUI();
+}
+function updateStreakUI(){
+  const b=document.getElementById('streakBadge'),n=document.getElementById('streakNum');
+  if(progress.streak>0){b.style.display='inline-flex';n.textContent=progress.streak}
+  else{b.style.display='none'}
+}
+
+// ==================== THEME ====================
+function initTheme(){
+  const t=localStorage.getItem('vocabuild_theme')||'light';
+  if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+  document.getElementById('themeBtn').textContent=t==='dark'?'☀️':'🌙';
+}
+document.getElementById('themeBtn').onclick=()=>{
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',isDark?'':'dark');
+  document.getElementById('themeBtn').textContent=isDark?'🌙':'☀️';
+  localStorage.setItem('vocabuild_theme',isDark?'light':'dark');
 };
 
-// ─── Init ───
-async function init() {
-  loadState();
-  try {
-    const resp = await fetch('words.json');
-    wordData = await resp.json();
-  } catch(e) {
-    console.error('Failed to load words:', e);
+// ==================== PICKERS ====================
+function renderPickers(){
+  const lg=document.getElementById('langGrid'),ig=document.getElementById('interestGrid');
+  lg.innerHTML=LANGUAGES.map(l=>`<div class="picker-card" data-lang="${l.id}"><span class="emoji">${l.emoji}</span>${l.name}</div>`).join('');
+  ig.innerHTML=INTERESTS.map(i=>`<div class="picker-card" data-interest="${i.id}"><span class="emoji">${i.emoji}</span>${i.name}</div>`).join('');
+  lg.onclick=e=>{const c=e.target.closest('.picker-card');if(!c)return;lg.querySelectorAll('.picker-card').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');state.lang=c.dataset.lang;checkStart()};
+  ig.onclick=e=>{const c=e.target.closest('.picker-card');if(!c)return;ig.querySelectorAll('.picker-card').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');state.interest=c.dataset.interest;checkStart()};
+}
+function checkStart(){document.getElementById('startBtn').disabled=!(state.lang&&state.interest)}
+document.getElementById('startBtn').onclick=()=>{startStudy()};
+
+// ==================== SM-2 ====================
+function getWordState(key){
+  if(!progress.words[key])progress.words[key]={ef:2.5,interval:0,reps:0,due:0};
+  return progress.words[key];
+}
+function sm2(ws,quality){
+  // quality: 0=again,1=hard,2=good,3=easy → map to SM-2 0-5
+  const q=[0,2,4,5][quality];
+  if(q<3){ws.reps=0;ws.interval=1}
+  else{
+    if(ws.reps===0)ws.interval=1;
+    else if(ws.reps===1)ws.interval=6;
+    else ws.interval=Math.round(ws.interval*ws.ef);
+    ws.reps++;
   }
-  if (state.lang && state.interest) {
-    document.getElementById('welcome-continue').style.display = 'block';
-    applyLangTheme();
-  }
-  updateStreak();
-  populateSettings();
+  ws.ef=Math.max(1.3,ws.ef+(.1-(.08+(5-q)*(.02+(5-q)*.008))));
+  ws.due=Date.now()+ws.interval*864e5;
+  return ws;
 }
 
-function loadState() {
-  const saved = localStorage.getItem('vocabuild_state');
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    state = {...state, ...parsed};
-  }
+// ==================== STUDY ====================
+function startStudy(){
+  document.body.className='lang-'+state.lang;
+  const words=WORDS[state.lang]||[];
+  state.cards=words.map((w,i)=>({...w,key:state.lang+'_'+i}));
+  buildQueue();
+  showScreen('screenStudy');
+  document.getElementById('navBottom').style.display='flex';
+  showNext();
 }
-
-function saveState() {
-  localStorage.setItem('vocabuild_state', JSON.stringify(state));
-}
-
-// ─── Navigation ───
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (id === 'dashboard') updateDashboard();
-  if (id === 'settings') populateSettings();
-  if (id !== 'settings') previousScreen = id;
-}
-
-function goBack() {
-  showScreen(previousScreen || 'study');
-}
-
-function resumeSession() {
-  startSession();
-}
-
-// ─── Selection ───
-function selectLang(el) {
-  document.querySelectorAll('[data-lang]').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  state.lang = el.dataset.lang;
-  const btn = document.getElementById('lang-continue');
-  btn.disabled = false;
-  btn.classList.add('ready');
-  saveState();
-}
-
-function selectInterest(el) {
-  document.querySelectorAll('[data-interest]').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  state.interest = el.dataset.interest;
-  const btn = document.getElementById('interest-continue');
-  btn.disabled = false;
-  btn.classList.add('ready');
-  saveState();
-}
-
-// ─── Learning ───
-function startLearning() {
-  applyLangTheme();
-  initWordProgress();
-  startSession();
-}
-
-function applyLangTheme() {
-  document.documentElement.style.setProperty('--current-grad', LANG_GRADS[state.lang] || LANG_GRADS.french);
-}
-
-function initWordProgress() {
-  if (!state.words[state.lang]) {
-    state.words[state.lang] = {};
-  }
-  const words = wordData[state.lang] || [];
-  words.forEach(w => {
-    if (!state.words[state.lang][w.word]) {
-      state.words[state.lang][w.word] = {
-        ef: 2.5, interval: 0, repetitions: 0, nextReview: null, learned: false
-      };
-    }
+function buildQueue(){
+  const now=Date.now();
+  state.queue=state.cards.filter(c=>{
+    const ws=getWordState(c.key);
+    return ws.due<=now;
+  }).sort((a,b)=>{
+    const wa=getWordState(a.key),wb=getWordState(b.key);
+    return wa.due-wb.due;
   });
-  saveState();
 }
-
-function startSession() {
-  if (!state.lang || !wordData[state.lang]) return;
-  initWordProgress();
-  const today = getToday();
-  const langWords = state.words[state.lang];
-  const allWords = wordData[state.lang];
-
-  // Get due words
-  let dueWords = allWords.filter(w => {
-    const prog = langWords[w.word];
-    return prog && prog.nextReview && prog.nextReview <= today;
-  });
-
-  // Get new words (not yet studied)
-  let newWords = allWords.filter(w => {
-    const prog = langWords[w.word];
-    return prog && !prog.nextReview;
-  });
-
-  // Build session: due first, then new to fill
-  currentSession = [];
-  const maxCards = state.cardsPerSession;
-
-  // Add due words
-  dueWords.sort(() => Math.random() - 0.5);
-  currentSession.push(...dueWords.slice(0, maxCards));
-
-  // Fill with new words
-  const remaining = maxCards - currentSession.length;
-  if (remaining > 0) {
-    currentSession.push(...newWords.slice(0, remaining));
-  }
-
-  // If still empty, restudy random words
-  if (currentSession.length === 0) {
-    const studied = allWords.filter(w => langWords[w.word] && langWords[w.word].nextReview);
-    studied.sort(() => Math.random() - 0.5);
-    currentSession.push(...studied.slice(0, maxCards));
-  }
-
-  if (currentSession.length === 0) return;
-
-  currentCardIndex = 0;
-  showScreen('study');
-  showCard();
-}
-
-function showCard() {
-  if (currentCardIndex >= currentSession.length) {
-    finishSession();
+function showNext(){
+  buildQueue();
+  updateStats();
+  const card=document.getElementById('card');
+  card.classList.remove('flipped');
+  state.flipped=false;
+  document.getElementById('ratingBtns').style.display='none';
+  if(state.queue.length===0){
+    document.getElementById('cardScene').style.display='none';
+    document.getElementById('emptyStudy').style.display='block';
+    document.getElementById('cardCount').textContent='';
     return;
   }
-
-  const word = currentSession[currentCardIndex];
-  const progress = document.getElementById('card-progress');
-  progress.textContent = `Card ${currentCardIndex + 1} of ${currentSession.length}`;
-
-  document.getElementById('card-word').textContent = word.word;
-  document.getElementById('card-pronunciation').textContent = word.pronunciation;
-  document.getElementById('card-translation').textContent = word.translation;
-
-  const interest = state.interest || 'daily';
-  document.getElementById('card-interest-tag').textContent = interest.toUpperCase();
-  document.getElementById('card-example').textContent = word.sentences[interest] || word.sentences.daily;
-
-  // Apply gradient to word
-  const wordEl = document.getElementById('card-word');
-  wordEl.style.background = LANG_GRADS[state.lang];
-  wordEl.style.webkitBackgroundClip = 'text';
-  wordEl.style.webkitTextFillColor = 'transparent';
-  wordEl.style.backgroundClip = 'text';
-
-  // Reset flip
-  document.getElementById('card-inner').classList.remove('flipped');
-  document.getElementById('rating-row').style.display = 'none';
-  isFlipped = false;
-
-  // Update streak display
-  document.getElementById('header-streak').textContent = state.streak;
+  document.getElementById('cardScene').style.display='block';
+  document.getElementById('emptyStudy').style.display='none';
+  state.current=state.queue[0];
+  const w=state.current;
+  document.getElementById('cWord').textContent=w.word;
+  document.getElementById('cPron').textContent=w.pronunciation;
+  document.getElementById('cTrans').textContent=w.translation;
+  const ex=w.examples[state.interest]||w.examples.daily||'';
+  document.getElementById('cExample').innerHTML=ex.replace(new RegExp(w.word,'gi'),m=>`<em>${m}</em>`);
+  document.getElementById('cardCount').textContent=`${state.queue.length} card${state.queue.length===1?'':'s'} due`;
+}
+function updateStats(){
+  let n=0,l=0,m=0,d=0;const now=Date.now();
+  state.cards.forEach(c=>{
+    const ws=getWordState(c.key);
+    if(ws.reps===0&&ws.interval===0)n++;
+    else if(ws.interval>=21)m++;
+    else l++;
+    if(ws.due<=now)d++;
+  });
+  document.getElementById('sNew').textContent=n;
+  document.getElementById('sLearning').textContent=l;
+  document.getElementById('sMastered').textContent=m;
+  document.getElementById('sDue').textContent=d;
 }
 
-function flipCard() {
-  const inner = document.getElementById('card-inner');
-  if (!isFlipped) {
-    inner.classList.add('flipped');
-    isFlipped = true;
-    document.getElementById('rating-row').style.display = 'flex';
-  }
+// Flip
+document.getElementById('cardScene').onclick=e=>{
+  if(e.target.closest('.speak-btn'))return;
+  if(!state.current)return;
+  const card=document.getElementById('card');
+  if(!state.flipped){card.classList.add('flipped');state.flipped=true;document.getElementById('ratingBtns').style.display='grid'}
+};
+
+// Speak
+document.getElementById('speakBtn').onclick=e=>{
+  e.stopPropagation();
+  if(!state.current)return;
+  const u=new SpeechSynthesisUtterance(state.current.word);
+  const langInfo=LANGUAGES.find(l=>l.id===state.lang);
+  if(langInfo)u.lang=langInfo.voice;
+  u.rate=.8;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+};
+
+// Rate
+function rate(q){
+  if(!state.current)return;
+  const ws=getWordState(state.current.key);
+  sm2(ws,q);
+  progress.totalReviews++;
+  updateStreak();
+  saveState(progress);
+  showNext();
 }
 
-// ─── SM-2 Algorithm ───
-function rateCard(quality) {
-  const word = currentSession[currentCardIndex];
-  const prog = state.words[state.lang][word.word];
-
-  state.totalReviews++;
-  if (quality >= 3) state.correctReviews++;
-
-  // SM-2
-  if (quality < 3) {
-    prog.repetitions = 0;
-    prog.interval = 1;
-  } else {
-    if (prog.repetitions === 0) {
-      prog.interval = 1;
-    } else if (prog.repetitions === 1) {
-      prog.interval = 6;
-    } else {
-      prog.interval = Math.round(prog.interval * prog.ef);
-    }
-    prog.repetitions++;
-  }
-
-  prog.ef = Math.max(1.3, prog.ef + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)));
-  prog.nextReview = addDays(getToday(), prog.interval);
-  prog.learned = prog.repetitions >= 1;
-
-  saveState();
-  currentCardIndex++;
-  showCard();
+// ==================== PROGRESS SCREEN ====================
+function renderProgress(){
+  if(!state.cards.length)return;
+  let learned=0;
+  state.cards.forEach(c=>{const ws=getWordState(c.key);if(ws.reps>0)learned++});
+  document.getElementById('pLearned').textContent=learned+' learned';
+  document.getElementById('pTotal').textContent=state.cards.length+' total';
+  document.getElementById('pBar').style.width=(learned/state.cards.length*100)+'%';
+  const list=document.getElementById('wordList');
+  list.innerHTML=state.cards.map(c=>{
+    const ws=getWordState(c.key);
+    let badge='🆕';
+    if(ws.interval>=21)badge='⭐';else if(ws.reps>0)badge='📖';
+    return `<div class="word-row"><span>${c.word} — ${c.translation}</span><span>${badge}</span></div>`;
+  }).join('');
 }
 
-// ─── Session Complete ───
-function finishSession() {
-  // Update streak
-  const today = getToday();
-  if (state.lastStudyDate !== today) {
-    const yesterday = addDays(today, -1);
-    if (state.lastStudyDate === yesterday || !state.lastStudyDate) {
-      state.streak++;
-    } else {
-      state.streak = 1;
-    }
-    state.lastStudyDate = today;
-  }
-  saveState();
-
-  const reviewed = currentSession.length;
-  document.getElementById('complete-stats').textContent =
-    `You reviewed ${reviewed} cards. ${state.streak} day streak! 🔥`;
-  showScreen('complete');
+// ==================== NAVIGATION ====================
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-bottom button').forEach(b=>b.classList.remove('active'));
+  if(id==='screenStudy')document.getElementById('navStudy').classList.add('active');
+  if(id==='screenProgress'){document.getElementById('navProgress').classList.add('active');renderProgress()}
+  if(id==='screenLang'){document.getElementById('navBottom').style.display='none'}
 }
 
-// ─── Dashboard ───
-function updateDashboard() {
-  if (!state.lang) return;
-  const langWords = state.words[state.lang] || {};
-  const allWords = wordData[state.lang] || [];
-  const today = getToday();
-
-  const learned = Object.values(langWords).filter(w => w.learned).length;
-  const due = Object.values(langWords).filter(w => w.nextReview && w.nextReview <= today).length;
-  const total = allWords.length;
-  const accuracy = state.totalReviews > 0 ? Math.round((state.correctReviews / state.totalReviews) * 100) : 0;
-
-  document.getElementById('dash-streak').textContent = state.streak;
-  document.getElementById('dash-learned').textContent = learned;
-  document.getElementById('dash-reviews').textContent = state.totalReviews;
-  document.getElementById('dash-accuracy').textContent = accuracy + '%';
-  document.getElementById('dash-due').textContent = due;
-  document.getElementById('dash-progress').style.width = (total > 0 ? (learned / total * 100) : 0) + '%';
-  document.getElementById('dash-progress-label').textContent = `${learned} / ${total} words`;
+function resetProgress(){
+  if(!confirm('Reset all progress? This cannot be undone.'))return;
+  progress={streak:0,lastDate:null,totalReviews:0,words:{}};
+  saveState(progress);
+  updateStreakUI();
+  showScreen('screenLang');
 }
 
-// ─── Audio ───
-function playAudio() {
-  if (!currentSession[currentCardIndex]) return;
-  const word = currentSession[currentCardIndex].word;
-  const lang = LANG_VOICES[state.lang] || 'en';
-  try {
-    const utter = new SpeechSynthesisUtterance(word);
-    utter.lang = lang;
-    utter.rate = 0.8;
-    speechSynthesis.speak(utter);
-  } catch(e) { /* fallback: no audio */ }
-}
-
-// ─── Settings ───
-function populateSettings() {
-  const langSel = document.getElementById('set-lang');
-  langSel.innerHTML = Object.entries(LANG_NAMES).map(([k,v]) =>
-    `<option value="${k}" ${k===state.lang?'selected':''}>${v}</option>`
-  ).join('');
-  document.getElementById('set-interest').value = state.interest || 'daily';
-  document.getElementById('set-cards').value = state.cardsPerSession;
-}
-
-function changeLang(val) {
-  state.lang = val;
-  applyLangTheme();
-  initWordProgress();
-  saveState();
-}
-
-function changeInterest(val) {
-  state.interest = val;
-  saveState();
-}
-
-function changeCardsPerSession(val) {
-  state.cardsPerSession = parseInt(val);
-  saveState();
-}
-
-function resetProgress() {
-  if (confirm('Reset all progress? This cannot be undone.')) {
-    localStorage.removeItem('vocabuild_state');
-    location.reload();
-  }
-}
-
-// ─── Streak ───
-function updateStreak() {
-  if (!state.lastStudyDate) return;
-  const today = getToday();
-  const yesterday = addDays(today, -1);
-  if (state.lastStudyDate !== today && state.lastStudyDate !== yesterday) {
-    state.streak = 0;
-    saveState();
-  }
-}
-
-// ─── Helpers ───
-function getToday() {
-  return new Date().toISOString().split('T')[0];
-}
-
-function addDays(dateStr, days) {
-  const d = new Date(dateStr);
-  d.setDate(d.getDate() + days);
-  return d.toISOString().split('T')[0];
-}
-
-// ─── Keyboard ───
-document.addEventListener('keydown', e => {
-  if (document.getElementById('study').classList.contains('active')) {
-    if (e.code === 'Space') { e.preventDefault(); flipCard(); }
-    if (isFlipped) {
-      if (e.key === '1') rateCard(0);
-      if (e.key === '2') rateCard(3);
-      if (e.key === '3') rateCard(4);
-      if (e.key === '4') rateCard(5);
-    }
-  }
-});
-
-// ─── Start ───
-init();
+// ==================== INIT ====================
+initTheme();
+renderPickers();
+updateStreakUI();
 </script>
 </body>
 </html>
